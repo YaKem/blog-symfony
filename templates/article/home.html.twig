@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon blog{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    <h1>Un nouveau jour, de nouvelles aventures</h1>
+    {% if articles|length > 0 %}
+        {% for article in articles %}
+            <h2>{{ article.title }}</h2>
+            <p>{{ article.content|u.concat(50, '...', false) }}</p>
+            <p>Posté le {{ article.createdAt|date('d/m/Y') }}</p>
+        {% endfor %}
+    {% else %}
+        <p>Pas encore d'article :-(</p>
+    {% endif %}
+</div>
+{% endblock %}
