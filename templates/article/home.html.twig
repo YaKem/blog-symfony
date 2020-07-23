@@ -1,19 +1,28 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout/base.html.twig' %}
 
 {% block title %}Mon blog{% endblock %}
 
 {% block body %}
 
-<div class="example-wrapper">
-    <h1>Un nouveau jour, de nouvelles aventures</h1>
     {% if articles|length > 0 %}
-        {% for article in articles %}
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.content|u.concat(50, '...', false) }}</p>
-            <p>Posté le {{ article.createdAt|date('d/m/Y') }}</p>
+        <h1>Un nouveau jour, de nouvelles aventures</h1>
+        {% for row in articles|batch(3) %}
+            <div class="row mt-5">
+                {% for article in row %}
+                    <div class="col-4">
+                        <h2>{{ article.title }}</h2>
+                        <a href="{{ path('route_show', {'id': article.id}) }}"><img src="{{ (article.imageName ? vich_uploader_asset(article) : asset('build/images/placeholder.png')) | imagine_filter('square_thumbnail_medium') }}" alt={{ article.title }} /></a>
+                        <p>{{ article.content|u.truncate(50, '...', false) }}</p>
+                        <a href="{{ path('route_show', {id: article.id}) }}">
+                            <p>Lire plus</p>
+                        </a>
+                        <p>Posté le {{ article.createdAt|date('d/m/Y') }}</p>
+                    </div>
+                {% endfor %}
+            </div>
         {% endfor %}
     {% else %}
-        <p>Pas encore d'article :-(</p>
+        <p class="text-center">Prochainement de nouveaux articles :-(</p>
     {% endif %}
-</div>
+
 {% endblock %}

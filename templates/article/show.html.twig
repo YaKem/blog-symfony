@@ -1,0 +1,15 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Mon blog{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1>Un nouveau jour, de nouvelles aventures</h1>
+    <h2>{{ article.title }}</h2>
+    <img src="{{ (article.imageName ? vich_uploader_asset(article) : asset('build/images/placeholder.png')) | imagine_filter('square_thumbnail_big') }}" alt={{ article.title }} />
+    <p class="mt-3">{{ article.content }}</p>
+    <p class="muted">Posté le {{ article.createdAt|date('d/m/Y') }}</p>
+    <a href="{{ path('route_edit', {'id': article.id}) }}">Edit</a> | <a href="{{ path('route_delete', {'id': article.id}) }}">Delete</a>
+</div>
+{% endblock %}

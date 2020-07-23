@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang={{ app.request.locale }}>
+    <head>
+        <meta charset="UTF-8">
+        <title>Mon site</title>
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app')}}
+        {% endblock %}
+    </head>
+    <body>
+
+        {{ include('layout/partials/_flash_message.html.twig') }}
+
+        <header>
+            {{ include('layout/partials/_nav.html.twig') }}
+        </header>
+
+        <main role="main" class="container">
+            {% block body %}{% endblock %}
+        </main>
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+
+    </body>
+</html>

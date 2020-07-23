@@ -1,0 +1,15 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title 'Edit Article n°' ~ article.id %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h1>Edit Article: {{ article.title }}</h1>
+
+            {{ include('article/_form.html.twig', {'submitButtonText': 'Update Article'}) }}
+
+        </div>
+    </div>
+
+{% endblock %}
