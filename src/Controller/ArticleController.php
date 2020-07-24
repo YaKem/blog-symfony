@@ -84,15 +84,27 @@ class ArticleController extends AbstractController
     }
 
     /**
-     * @Route("/article/{id<[\d]+>}/delete", name="route_delete")
+     * @Route("/article/{id<[\d]+>}/delete", name="route_delete", methods="DELETE")
      */
-    public function delete(EntityManagerInterface $em, Article $article): Response
+    public function delete(Request $request, EntityManagerInterface $em, Article $article): Response
     {
-        $em->remove($article);
-        $em->flush();
+        $submittedToken = $request->request->get('csrf_token');
 
-        $this->addFlash('success', 'Votre article a été supprimé!');
+        if($this->isCsrfTokenValid('article_deletion' . $article->getId(), $submittedToken)) {
+            $em->remove($article);
+            $em->flush();
+    
+            $this->addFlash('success', 'Votre article a été supprimé!');
+        }
 
         return $this->redirectToRoute('route_home');
+    }
+
+    /**
+    * @Route("/article/about", name="route_about")
+    */
+    public function about()
+    {
+        return $this->render('article/about.html.twig');
     }
 }

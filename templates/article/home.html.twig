@@ -9,7 +9,7 @@
         {% for row in articles|batch(3) %}
             <div class="row mt-5">
                 {% for article in row %}
-                    <div class="col-4">
+                    <div class="col-md-4">
                         <h2>{{ article.title }}</h2>
                         <a href="{{ path('route_show', {'id': article.id}) }}"><img src="{{ (article.imageName ? vich_uploader_asset(article) : asset('build/images/placeholder.png')) | imagine_filter('square_thumbnail_medium') }}" alt={{ article.title }} /></a>
                         <p>{{ article.content|u.truncate(50, '...', false) }}</p>
