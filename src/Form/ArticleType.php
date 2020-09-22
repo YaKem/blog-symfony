@@ -14,7 +14,11 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('content')
+            ->add('content', null, [
+                'attr' => [
+                    'rows' => 15
+                ]
+            ])
             ->add('imageFile', VichImageType::class, [
                 'label' => 'Image (jpg or png file)',
                 'required' => false,
@@ -29,6 +33,13 @@ class ArticleType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Article::class,
+            // enable/disable CSRF protection for this form
+            'csrf_protection' => true,
+            // the name of the hidden HTML field that stores the token
+            'csrf_field_name' => '_token',
+            // an arbitrary string used to generate the value of the token
+            // using a different string for each form improves its security
+            'csrf_token_id'   => 'article_item',
         ]);
     }
 }

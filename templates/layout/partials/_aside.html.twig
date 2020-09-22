@@ -1,0 +1,32 @@
+<form class="mt-5 form-inline" action="{{ path('app_search') }}" method="post">
+    <div class="input-group">
+        <input class="form-control" type="text" name="word" placeholder="Search">
+        <div class="input-group-append">
+            <button class="btn btn-secondary" type="submit">Ok</button>
+        </div>
+    </div>
+</form>
+
+<h2 class="mt-5">Catégories</h2>
+<ul class="list-unstyled ml-3">
+    {% for category in categories %}
+        <li><a class="text-white" href="{{ path('app_article_by_category', {'id': category.id}) }}">{{ category.name }}</a></li>
+    {% endfor %}
+</ul>
+
+<h2 class="mt-5">Newsletter</h>
+<form class="mt-3 form-inline" action="{{ path('app_newsletter') }}" method="post">
+    <div class="input-group">
+        <input class="form-control" type="text" name="email" placeholder="Email">
+        <div class="input-group-append">
+            <button class="btn btn-secondary" type="submit">Ok</button>
+        </div>
+    </div>
+</form>
+
+<h2 class="mt-5">Liens</h2>
+<ul class="list-unstyled ml-3">
+    <li><a class="text-white" href="#">Voyages</a></li>
+    <li><a class="text-white" href="#">Blog du globe trotter</a></li>
+    <li><a class="text-white" href="#">Besoin de s'évader</a></li>
+</ul>

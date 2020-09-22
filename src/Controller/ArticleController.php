@@ -2,109 +2,105 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Article;
-use App\Repository\ArticleRepository;
+use App\Entity\Comment;
+use App\Entity\Category;
 use App\Form\ArticleType;
+use App\Form\CommentType;
+use App\Repository\ArticleRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ArticleController extends AbstractController
 {
     /**
-     * @Route("/", name="route_home", methods="GET")
+     * @Route("/", name="app_home", methods="GET")
      */
     public function home(ArticleRepository $repo): Response
     {
         $articles = $repo->findBy([], ['createdAt' => 'DESC']);
 
-        return $this->render('article/home.html.twig', compact('articles'));
-    }
-
-    /**
-     * @Route("/article/{id<[\d]+>}", name="route_show", methods="GET")
-     */
-    public function show(Article $article): Response
-    {
-        return $this->render('article/show.html.twig', compact('article'));
-    }
-
-    /**
-     * @Route("/article/create", name="route_create", methods={"GET", "PUT"})
-     */
-    public function create(Request $request, EntityManagerInterface $em): response
-    {
-        $article = new Article;
-
-        $form = $this->createForm(ArticleType::class, $article, [
-            'method' => "PUT"
+        return $this->render('article/home.html.twig', [
+            'articles' => $articles,
+            'categories' => $this->categories
         ]);
+    }
 
-        $form->handleRequest($request);
+    /**
+     * @Route("/article/{id<[\d]+>}", name="app_show", methods={"GET", "POST"})
+     */
+    public function show(Article $article, CommentRepository $repo, Request $request, EntityManagerInterface $em): Response
+    {
+        $comments = $repo->findBy(['article' => $article->getId()], ['createdAt' => 'DESC']);
+        
+        $comment = new Comment();
 
-        if($form->isSubmitted() && $form->isValid()) {
-            $em->persist($article);
+        $commentForm = $this->createForm(CommentType::class, $comment);
+
+        $commentForm->handleRequest($request);
+
+        if($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $comment->setCreatedAt(new \DateTime())
+                    ->setArticle($article);
+            $em->persist($comment);
             $em->flush();
 
-            $this->addFlash('success', 'Nouvel article créé!');
+            $this->addFlash('info', 'Votre commentaire a été ajouté!');
 
-            return $this->redirectToRoute('route_home');
-        }
-
-        return $this->render('article/create.html.twig', [
-            'form' => $form->createView()
-        ]);
-    }
-
-    /**
-     * @Route("/article/{id<[\d]+>}/edit", name="route_edit", methods={"GET", "PUT"})
-     */
-    public function edit(Request $request, EntityManagerInterface $em, Article $article): Response
-    {
-        $form = $this->createForm(ArticleType::class, $article, [
-            'method' => "PUT"
-        ]);
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
+            $id = substr(strrchr($request->headers->get('referer'), '//'), 1);
             
-        $this->addFlash('success', 'Votre article a été mis à jour!');
-
-            return $this->redirectToRoute('route_home');
+            return $this->redirectToRoute('app_show', compact('id'));
         }
-
-        return $this->render('article/edit.html.twig', [
+        return $this->render('article/show.html.twig', [
             'article' => $article,
-            'form'    => $form->createView()
+            'comments' => $comments,
+            'commentForm' => $commentForm->createView(),
+            'categories' => $this->categories
         ]);
     }
 
     /**
-     * @Route("/article/{id<[\d]+>}/delete", name="route_delete", methods="DELETE")
+     * @Route("/article/category/{id<[\d]+>}", name="app_article_by_category", methods={"GET", "POST"})
      */
-    public function delete(Request $request, EntityManagerInterface $em, Article $article): Response
+    public function showByCategory(Category $category, ArticleRepository $repo, Request $request): Response
     {
-        $submittedToken = $request->request->get('csrf_token');
+        $results = $repo->findBy(['category' => $category->getId()], ['createdAt' => 'DESC']);
 
-        if($this->isCsrfTokenValid('article_deletion' . $article->getId(), $submittedToken)) {
-            $em->remove($article);
-            $em->flush();
-    
-            $this->addFlash('success', 'Votre article a été supprimé!');
-        }
-
-        return $this->redirectToRoute('route_home');
+        return $this->render('article/search.html.twig', [
+            'results' => $results,
+            'categories' => $this->categories
+        ]);
     }
 
     /**
-    * @Route("/article/about", name="route_about")
+    * @Route("/article/about", name="app_about", methods="GET")
     */
-    public function about()
+    public function about(): Response
     {
-        return $this->render('article/about.html.twig');
+        return $this->render('article/about.html.twig', ['categories' => $this->categories]);
+    }
+
+    /**
+    * @Route("/article/search", name="app_search", methods={"GET", "POST"})
+    */
+    public function search(Request $request, ArticleRepository $repo): Response
+    {
+        $word = $request->request->get('word');
+
+        $results = $repo->findSearch($word);
+
+        $word = strtolower($word);
+        $wordf = ucfirst($word);
+
+        return $this->render('article/search.html.twig', [
+                'results' => $results,
+                'word' => $word,
+                'categories' => $this->categories
+        ]);
     }
 }

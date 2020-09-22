@@ -4,18 +4,18 @@
 
 {% block body %}
 
-    {% if articles|length > 0 %}
-        <h1>Un nouveau jour, de nouvelles aventures</h1>
+    {% if articles is not empty %}
+        <h1 class="text-center mt-4">Une photo, une destination ...</h1>
         {% for row in articles|batch(3) %}
             <div class="row mt-5">
                 {% for article in row %}
                     <div class="col-md-4">
                         <h2>{{ article.title }}</h2>
-                        <a href="{{ path('route_show', {'id': article.id}) }}"><img src="{{ (article.imageName ? vich_uploader_asset(article) : asset('build/images/placeholder.png')) | imagine_filter('square_thumbnail_medium') }}" alt={{ article.title }} /></a>
-                        <p>{{ article.content|u.truncate(50, '...', false) }}</p>
-                        <a href="{{ path('route_show', {id: article.id}) }}">
-                            <p>Lire plus</p>
-                        </a>
+                        <a href="{{ path('app_show', {'id': article.id}) }}"><img class="img-fluid" src="{{ vich_uploader_asset(article) | imagine_filter('square_thumbnail_medium') }}" alt={{ article.title }} /></a>
+                        <p>{{ article.content|striptags|u.truncate(50, '...', false) }}</p>                       
+                        <p>
+                            <a class="text-white" href="{{ path('app_show', {id: article.id}) }}">Lire plus</a>
+                        </p>
                         <p>Posté le {{ article.createdAt|date('d/m/Y') }}</p>
                     </div>
                 {% endfor %}

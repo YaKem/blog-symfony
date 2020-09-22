@@ -7,17 +7,22 @@
             {{ encore_entry_link_tags('app')}}
         {% endblock %}
     </head>
-    <body>
+    <body class="d-flex flex-column">
 
-        {{ include('layout/partials/_flash_message.html.twig') }}
-
-        <header>
-            {{ include('layout/partials/_nav.html.twig') }}
+        <header class="d-flex flex-column justify-content-between">
+            {{ include('layout/partials/_header.html.twig') }}
         </header>
 
-        <main role="main" class="container">
-            {% block body %}{% endblock %}
-        </main>
+        {{ include('layout/partials/_flash-messages.html.twig') }}
+
+        <div class="container-lg d-flex justify-content-between flex-grow-1">
+            <main role="main" class="bg-info px-4 py-4 w-75 mx-sm-auto">
+                {% block body %}{% endblock %}
+            </main>
+            <aside class="ml-1 bg-info px-4 d-none d-lg-block d-xl-block">
+                {{ include('layout/partials/_aside.html.twig', {'categories': categories}) }}
+            </aside>       
+        </div>
 
         {{include('layout/partials/_footer.html.twig') }}
         

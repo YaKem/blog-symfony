@@ -1,8 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
 
 @import "~bootstrap/scss/bootstrap";
+@import "fontawesome.scss";
+@import "solid.scss";
+@import "brands.scss";
 
 body {
     font-family: 'Playfair Display', serif;
+    background-color: gray;
 }
 
+header, footer {
+    background: url("../images/bg-header.jpg");
+    padding: 5px 10px;
+}
+
+.container-lg {
+    min-height: 100vh;
+}
+
+.nav-link {
+    color: white;
+}
+
+.nav-link:visited {
+    background: black;
+    color: red;
+}
+
+#comments {
+    line-height: 0.5em;
+}
+
+.alert {
+    margin-bottom: 0;
+}

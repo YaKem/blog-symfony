@@ -12,6 +12,4 @@ import '../scss/app.scss';
 import $ from 'jquery';
 import 'bootstrap';
 
-$(document).load(function() {
-    $( ".alert" ).slideUp( 300 ).delay( 800 ).fadeOut( 400 );
-});
+$("div.alert").delay( 3000 ).slideUp( 300 );

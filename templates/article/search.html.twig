@@ -1,0 +1,25 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block body %}
+
+    <h1 class="text-center">My Result</h1>
+    {% if results %}
+        {% for article in results %}
+            <h2>{{ article.title }}</h2>
+            <img class="img-fluid" src="{{ vich_uploader_asset(article) }}" alt="{{ article.title }}">
+            {% if word is defined %}
+                <p>{{ highlightize(word, article.content)|raw }}</p>
+            {% else %}
+                <p class="mt-3">{{ article.content|striptags }}</p>
+            {% endif %}
+            <p>
+                <a class="text-decoration-none text-white" href="{{ path('app_show', {id: article.id}) }}">Lire plus</a>
+            </p>
+        {% endfor %}
+    {% else %}
+        <p class="text-center mt-3 text-white">Aucun résultat ne correspond à votre recherche!</p>
+    {% endif %}
+
+{% endblock %}

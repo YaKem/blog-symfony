@@ -47,4 +47,13 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findSearch($word)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.content LIKE :word')
+            ->setParameter('word', '% ' . $word . ' %')
+            ->getQuery()
+            ->getResult();
+    }
 }
